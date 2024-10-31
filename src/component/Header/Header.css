@@ -1,0 +1,42 @@
+/* src/Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+  }
+  
+  .header-left h1 {
+    font-size: 1.5rem;
+    color: #6c63ff;
+  }
+
+  .header-right{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .header-right nav a {
+    margin: 0 1rem;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 18px;
+  }
+  
+  .start-button {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(90deg, #ff66a3, #9d5eff);
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  
+  .start-button:hover {
+    opacity: 0.9;
+  }
+  

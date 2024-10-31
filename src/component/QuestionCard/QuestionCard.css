@@ -1,0 +1,50 @@
+.question-card{
+    text-align: left;
+    padding: 20px 3rem;
+    margin-bottom: 2rem;
+    background-color: aliceblue;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.answer-option {
+    padding: 5px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+  
+.correct-answer {
+    color: green;
+    font-weight: bold;
+}
+
+.question-input{
+    width: 100%;
+    border: 2px solid #e2e2e2;
+    background-color: aliceblue;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+}
+
+.answer-input{
+    width: 100%;
+    border: 2px solid #e2e2e2;
+    background-color: aliceblue;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    /* outline: none; */
+}
+
+.correct-answer-input {
+    color: green;
+    font-weight: 600;
+    width: 100%;
+    background-color: aliceblue;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+}
