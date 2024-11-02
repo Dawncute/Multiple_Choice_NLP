@@ -5,12 +5,11 @@ const QuestionCard = ({ question, index, showResult, isEditing, onQuestionEdit, 
   return (
     <div className="question-card">
       {isEditing ? (
-          <input
-            className='question-input'
-            type="text"
-            value={question.questionText}
-            onChange={(e) => onQuestionEdit(e.target.value)}
-          />
+        <textarea
+          className='question-input'
+          value={question.questionText.trimStart()}
+          onChange={(e) => onQuestionEdit(e.target.value)}
+        />
       ) : (
           <h3>Question {index + 1}. {question.questionText}</h3>
       )}

@@ -7,6 +7,7 @@ import QuestionCard from '../QuestionCard/QuestionCard';
 import ExportButton from '../ExportButton/ExportButton';
 import { exportToPDF } from '../../utils/pdfUtils';
 import { shuffleArray, countSentences } from '../../utils/questionUtils';
+import { useNavigate } from 'react-router-dom';
 
 const MCQGenerator = () => {
   const [text, setText] = useState('');
@@ -17,6 +18,15 @@ const MCQGenerator = () => {
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Add editing state
+  const navigate = useNavigate();
+
+  const handleStudy = () => {
+    if (questions.length > 0) {
+      navigate('/study', { state: { questions } });
+    } else {
+      alert("No questions available for study!");
+    }
+  };
 
   // Handler for editing questions and answers
   const handleQuestionEdit = (index, newQuestionText) => {
@@ -105,7 +115,7 @@ const handleSubmit = async (e) => {
               {showResult ? "Hide Result" : "Show Result"}
             </button>
             <div className="button-custom">
-              <button className="study">
+              <button className="study" onClick={handleStudy}>
                 <i className="fas fa-book"></i> STUDY
               </button>
               <button className="edit" onClick={handleEditToggle}>

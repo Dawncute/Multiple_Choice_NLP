@@ -5,6 +5,7 @@ import MCQGenerator from './component/Generation/MCQGenerator';
 import './App.css';
 import Home from './pages/Home/Home';
 import Team from './pages/Team/Team';
+import StudyPage from './pages/Study/StudyPage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home/>} />
           <Route path="/team" element={<Team/>} />
           <Route path="/mcqgenerator" element={<MCQGenerator />} />
+          <Route path="/study" element={<StudyPage />} />
         </Routes>
       </div>
     </Router>

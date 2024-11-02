@@ -27,6 +27,10 @@
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 1.5rem;
+    resize: vertical; /* Cho phép người dùng kéo dài theo chiều dọc */
+    overflow-y: auto;        /* Điều chỉnh khoảng cách dòng để căn giữa nội dung */
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
 }
 
 .answer-input{
