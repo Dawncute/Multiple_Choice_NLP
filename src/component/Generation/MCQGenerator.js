@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './MCQGenerator.css';
 import FileUploader from '../FileUpload/FileUploader';
@@ -20,13 +20,38 @@ const MCQGenerator = () => {
   const [isEditing, setIsEditing] = useState(false); // Add editing state
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const savedState = localStorage.getItem("mcqGeneratorState");
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      setText(parsedState.text || '');
+      setQuestions(parsedState.questions || []);
+      setSelectedFile(parsedState.selectedFile || null);
+      setSelectedQuestionType(parsedState.selectedQuestionType || '');
+      setSelectedQuestionCount(parsedState.selectedQuestionCount || '');
+      setShowResult(parsedState.showResult || false);
+      setIsEditing(parsedState.isEditing || false);
+    }
+  }, []);
+
   const handleStudy = () => {
     if (questions.length > 0) {
+      const stateToSave = {
+        text,
+        questions,
+        selectedFile,
+        selectedQuestionType,
+        selectedQuestionCount,
+        showResult,
+        isEditing,
+      };
+      localStorage.setItem("mcqGeneratorState", JSON.stringify(stateToSave));
       navigate('/study', { state: { questions } });
     } else {
       alert("No questions available for study!");
     }
   };
+  
 
   // Handler for editing questions and answers
   const handleQuestionEdit = (index, newQuestionText) => {
@@ -78,7 +103,7 @@ const handleSubmit = async (e) => {
 
     const formattedQuestions = response.data.map((question) => {
       const allAnswers = shuffleArray([question.correctAnswer, ...question.distractors]);
-      const correctAnswerIndex = allAnswers.indexOf(question.correctAnswer); // set correctAnswerIndex
+      const correctAnswerIndex = allAnswers.indexOf(question.correctAnswer);
       return { ...question, allAnswers, correctAnswerIndex };
     });
 
