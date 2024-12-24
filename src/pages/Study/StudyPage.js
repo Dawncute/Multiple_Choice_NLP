@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect} from 'react';
+// import { useLocation } from 'react-router-dom';
 import './StudyPage.css';
 
 const StudyPage = () => {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
-  const location = useLocation();
-  const { questions } = location.state || { questions: [] };
+  const [questions, setQuestions] = useState([]);
 
   const handleAnswerSelect = (questionIndex, answerIndex) => {
     setSelectedAnswers((prev) => ({
@@ -23,6 +22,13 @@ const StudyPage = () => {
     setSelectedAnswers({});
     setShowResults(false);
   };
+
+  useEffect(() => {
+    const questions = sessionStorage.getItem('questionsForStudy');
+    if (questions) {
+      setQuestions(JSON.parse(questions));
+    }
+  }, []);
 
   const calculateScore = () => {
     return questions.reduce((score, question, index) => {

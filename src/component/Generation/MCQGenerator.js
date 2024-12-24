@@ -7,7 +7,6 @@ import QuestionCard from '../QuestionCard/QuestionCard';
 import ExportButton from '../ExportButton/ExportButton';
 import { exportToPDF } from '../../utils/pdfUtils';
 import { shuffleArray, countSentences } from '../../utils/questionUtils';
-import { useNavigate } from 'react-router-dom';
 
 const MCQGenerator = () => {
   const [text, setText] = useState('');
@@ -17,11 +16,11 @@ const MCQGenerator = () => {
   const [selectedQuestionCount, setSelectedQuestionCount] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Add editing state
-  const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
 
+  // Chỉ tải dữ liệu từ sessionStorage khi load trang
   useEffect(() => {
-    const savedState = localStorage.getItem("mcqGeneratorState");
+    const savedState = sessionStorage.getItem("mcqGeneratorState");
     if (savedState) {
       const parsedState = JSON.parse(savedState);
       setText(parsedState.text || '');
@@ -34,26 +33,6 @@ const MCQGenerator = () => {
     }
   }, []);
 
-  const handleStudy = () => {
-    if (questions.length > 0) {
-      const stateToSave = {
-        text,
-        questions,
-        selectedFile,
-        selectedQuestionType,
-        selectedQuestionCount,
-        showResult,
-        isEditing,
-      };
-      localStorage.setItem("mcqGeneratorState", JSON.stringify(stateToSave));
-      navigate('/study', { state: { questions } });
-    } else {
-      alert("No questions available for study!");
-    }
-  };
-  
-
-  // Handler for editing questions and answers
   const handleQuestionEdit = (index, newQuestionText) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index] = { ...updatedQuestions[index], questionText: newQuestionText };
@@ -62,59 +41,71 @@ const MCQGenerator = () => {
 
   const handleAnswerEdit = (questionIndex, answerIndex, newAnswer) => {
     const updatedQuestions = [...questions];
-  
-    // Cập nhật câu trả lời
     updatedQuestions[questionIndex].allAnswers[answerIndex] = newAnswer;
-  
-    // Nếu đây là đáp án đúng, cập nhật `correctAnswer` và `correctAnswerIndex`
     if (updatedQuestions[questionIndex].correctAnswerIndex === answerIndex) {
       updatedQuestions[questionIndex].correctAnswer = newAnswer;
     }
-    
-    // Cập nhật lại trạng thái questions
     setQuestions(updatedQuestions);
   };
-  
-  
+
   const handleEditToggle = () => {
-    // Lưu lại mọi thay đổi khi lưu
     if (isEditing) {
       setQuestions([...questions]);
     }
     setIsEditing(!isEditing);
   };
-  
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  // Check if text is empty or null
-  if (!text || text.trim() === "") {
-    console.error("Text input is empty. Please enter some text.");
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!text || text.trim() === "") {
+      console.error("Text input is empty. Please enter some text.");
+      return;
+    }
 
-  setIsLoading(true);
-  try {
-    const response = await axios.post('http://localhost:9002/generate', {
-      text: text,
-      count: selectedQuestionCount,
-    });
+    setIsLoading(true);
+    try {
+      const response = await axios.post('http://localhost:9002/generate', {
+        text: text,
+        count: selectedQuestionCount,
+      });
 
-    const formattedQuestions = response.data.map((question) => {
-      const allAnswers = shuffleArray([question.correctAnswer, ...question.distractors]);
-      const correctAnswerIndex = allAnswers.indexOf(question.correctAnswer);
-      return { ...question, allAnswers, correctAnswerIndex };
-    });
+      const formattedQuestions = response.data.map((question) => {
+        const allAnswers = shuffleArray([question.correctAnswer, ...question.distractors]);
+        const correctAnswerIndex = allAnswers.indexOf(question.correctAnswer);
+        return { ...question, allAnswers, correctAnswerIndex };
+      });
 
-    setQuestions(formattedQuestions);
-  } catch (error) {
-    console.error('Error fetching questions:', error);
-  } finally {
-    setIsLoading(false);
-  }
-};
+      setQuestions(formattedQuestions);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  const handleStudy = () => {
+    if (questions.length > 0) {
+      sessionStorage.setItem('questionsForStudy', JSON.stringify(questions));
+      const studyWindow = window.open('/study', '_blank');
+      studyWindow.location.href = `/study?questions=${encodeURIComponent(JSON.stringify(questions))}`;
+    } else {
+      alert("No questions available for study!");
+    }
+  };
+
+  // Lưu trạng thái vào sessionStorage khi thay đổi dữ liệu
+  useEffect(() => {
+    const stateToSave = {
+      text,
+      questions,
+      selectedFile,
+      selectedQuestionType,
+      selectedQuestionCount,
+      showResult,
+      isEditing,
+    };
+    sessionStorage.setItem("mcqGeneratorState", JSON.stringify(stateToSave));
+  }, [text, questions, selectedFile, selectedQuestionType, selectedQuestionCount, showResult, isEditing]);
 
   return (
     <div className="generate">
